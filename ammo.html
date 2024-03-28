@@ -53,6 +53,10 @@
 		let softBodyHelpers;
 
 		const light = new THREE.DirectionalLight(0xffffff, 3);
+		let sun;
+		let sunAngle = 0;
+		let ground;
+		let cnt = 0;
 
 		Ammo().then(function (AmmoLib) {
 
@@ -84,7 +88,7 @@
 			scene = new THREE.Scene();
 			scene.background = new THREE.Color(0xbfd1e5);
 
-			camera.position.set(- 7, 50, 20);
+			camera.position.set(0, 50, 20);
 
 			renderer = new THREE.WebGLRenderer({ antialias: true });
 			renderer.setPixelRatio(window.devicePixelRatio);
@@ -98,25 +102,31 @@
 
 			textureLoader = new THREE.TextureLoader();
 
-			const ambientLight = new THREE.AmbientLight(0xbbbbbb);
-			scene.add(ambientLight);
+			// const ambientLight = new THREE.AmbientLight(0xbbbbbb);
+			// scene.add(ambientLight);
 
 			
-			light.position.set(- 10, 10, 5);
+			light.position.set(50, 0, 0);
 			light.castShadow = true;
-			const d = 20;
+			const d = 40;
 			light.shadow.camera.left = - d;
 			light.shadow.camera.right = d;
 			light.shadow.camera.top = d;
 			light.shadow.camera.bottom = - d;
 
 			light.shadow.camera.near = 2;
-			light.shadow.camera.far = 50;
+			light.shadow.camera.far = 100;
 
 			light.shadow.mapSize.x = 1024;
 			light.shadow.mapSize.y = 1024;
 
 			scene.add(light);
+
+			const sphereGeometry = new THREE.SphereGeometry( 0.5, 20, 10 );
+			const sphereMaterial = new THREE.MeshPhongMaterial( { color: '#ff0', emissive: 0x222222 } );
+			sun = new THREE.Mesh( sphereGeometry, sphereMaterial );
+			sun.position.set(50, 0, 0 );
+			scene.add( sun );
 
 			// AxesHelper：辅助观察的坐标系
 			const axesHelper = new THREE.AxesHelper(30);
@@ -151,11 +161,10 @@
 		}
 
 		function createObjects() {
-
 			// Ground
 			pos.set(0, 0, 0);
 			quat.set(0, 0, 0, 1);
-			const ground = createParalellepiped(40, 1, 20, 0, pos, quat, new THREE.MeshPhongMaterial({ color: 0xFFFFFF }));
+			ground = createParalellepiped(40, 1, 20, 0, pos, quat, new THREE.MeshPhongMaterial({ color: 0xFFFFFF }));
 			ground.position.set(20, 10, 10)
 
 			ground.rotation.x = Math.PI / 2 / 90 * 30
@@ -328,10 +337,26 @@
 		function animate() {
 
 			requestAnimationFrame(animate);
-			light.position.x += 0.1
+			sunAngle += Math.PI / 360
+
+			let x = Math.cos(sunAngle) * 50
+			let y = Math.sin(sunAngle) * 50
+			sun.position.set(x, y, 0)
+			light.position.set(x, y, 0)
 
 			render();
 			stats.update();
+
+			// console.log(ground)
+
+
+			while(cnt++ == 10) {
+				console.log(ground)
+			console.log(renderer)
+			console.log(scene)
+			}
+		
+
 
 		}
 
@@ -387,14 +412,11 @@
 						indexVertex++;
 						volumePositions[indexVertex] = z;
 						volumeNormals[indexVertex] = nz;
-
 					}
-
 				}
 
 				geometry.attributes.position.needsUpdate = true;
 				geometry.attributes.normal.needsUpdate = true;
-
 			}
 
 			// Update rigid bodies
@@ -404,21 +426,15 @@
 				const objPhys = objThree.userData.physicsBody;
 				const ms = objPhys.getMotionState();
 				if (ms) {
-
 					ms.getWorldTransform(transformAux1);
 					const p = transformAux1.getOrigin();
 					const q = transformAux1.getRotation();
 					objThree.position.set(p.x(), p.y(), p.z());
 					objThree.quaternion.set(q.x(), q.y(), q.z(), q.w());
-
 				}
-
 			}
-
 		}
-
 	</script>
-
 </body>
 
 </html>
