@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="utf-8">
+	<title>My first three.js app</title>
+	<style>
+		body {
+			margin: 0;
+		}
+	</style>
+</head>
+
+<body>
+	<script type="module">
+		import * as THREE from 'three';
+		import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+
+		const scene = new THREE.Scene();
+		const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+
+		const renderer = new THREE.WebGLRenderer();
+		renderer.setSize(window.innerWidth, window.innerHeight);
+		// renderer.setClearColor(new THREE.Color(0xffffff));
+		renderer.shadowMapEnabled = true; // 启用阴影选项
+		document.body.appendChild(renderer.domElement);
+
+		var geo = new THREE.BoxGeometry(1, 1, 1);
+		var mat = new THREE.LineBasicMaterial({ color: 0x0000ff });
+		var cube = new THREE.Mesh(geo, mat);
+		cube.castShadow = true; // 启用阴影选项
+		scene.add(cube)
+
+		var geo = new THREE.PlaneGeometry(10, 5, 3, 3);
+		var mat = new THREE.LineBasicMaterial({ color: 0xeeeeee });
+		var plane = new THREE.Mesh(geo, mat);
+		plane.receiveShadow = true; // 启用接受阴影选项
+
+		scene.add(plane)
+
+		// var light = new THREE.DirectionalLight({ color: 0xffffff });
+		// light.position.set(6, 1, 4);
+		// light.castShadow = true; // 启用阴影选项
+		// scene.add(light);
+
+		{
+			// 聚光光源
+			var spotLight = new THREE.SpotLight(0xffffff);
+			// 设置聚光光源位置
+			spotLight.position.set(6, 1, 4);
+			// 设置聚光光源发散角度
+			spotLight.angle = Math.PI / 6
+			scene.add(spotLight); //光对象添加到scene场景中
+			// 设置用于计算阴影的光源对象
+			spotLight.castShadow = true;
+			// 设置计算阴影的区域，注意包裹对象的周围
+			spotLight.shadow.camera.near = 1;
+			spotLight.shadow.camera.far = 30;
+			spotLight.shadow.camera.fov = 2;
+			
+		}
+
+		{
+			var geo = new THREE.BoxGeometry(0.1, 0.1, 0.1);
+			var mat = new THREE.LineBasicMaterial({ color: 0x0000ff });
+			var cube = new THREE.Mesh(geo, mat);
+			cube.castShadow = true; // 启用阴影选项
+			cube.position.set(6, 1, 4)
+			scene.add(cube)
+		}
+
+
+		camera.position.z = 5;
+
+		const controls = new OrbitControls(camera, renderer.domElement);
+		controls.target.set(0, 0.5, 0);
+		controls.update();
+		controls.enablePan = false;
+		controls.enableDamping = true;
+
+		// AxesHelper：辅助观察的坐标系
+		const axesHelper = new THREE.AxesHelper(30);
+		scene.add(axesHelper);
+
+
+		function animate() {
+			requestAnimationFrame(animate);
+			renderer.render(scene, camera);
+		}
+
+		animate();
+	</script>
+</body>
+
+</html>
