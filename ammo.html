@@ -105,7 +105,7 @@
 			// const ambientLight = new THREE.AmbientLight(0xbbbbbb);
 			// scene.add(ambientLight);
 
-			
+
 			light.position.set(50, 0, 0);
 			light.castShadow = true;
 			const d = 40;
@@ -122,11 +122,11 @@
 
 			scene.add(light);
 
-			const sphereGeometry = new THREE.SphereGeometry( 0.5, 20, 10 );
-			const sphereMaterial = new THREE.MeshPhongMaterial( { color: '#ff0', emissive: 0x222222 } );
-			sun = new THREE.Mesh( sphereGeometry, sphereMaterial );
-			sun.position.set(50, 0, 0 );
-			scene.add( sun );
+			const sphereGeometry = new THREE.SphereGeometry(0.5, 20, 10);
+			const sphereMaterial = new THREE.MeshPhongMaterial({ color: '#ff0', emissive: 0x222222 });
+			sun = new THREE.Mesh(sphereGeometry, sphereMaterial);
+			sun.position.set(50, 0, 0);
+			scene.add(sun);
 
 			// AxesHelper：辅助观察的坐标系
 			const axesHelper = new THREE.AxesHelper(30);
@@ -337,8 +337,8 @@
 		function animate() {
 
 			requestAnimationFrame(animate);
-			sunAngle += Math.PI / 360
 
+			sunAngle += Math.PI / 360
 			let x = Math.cos(sunAngle) * 50
 			let y = Math.sin(sunAngle) * 50
 			sun.position.set(x, y, 0)
@@ -347,15 +347,7 @@
 			render();
 			stats.update();
 
-			// console.log(ground)
 
-
-			while(cnt++ == 10) {
-				console.log(ground)
-			console.log(renderer)
-			console.log(scene)
-			}
-		
 
 
 		}
